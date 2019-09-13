@@ -68,8 +68,9 @@ namespace JHipsterNetSampleApplication.Controllers {
         {
             _log.LogDebug("REST request to get a page of Operations");
             var page = _applicationDatabaseContext.Operations
-                .Include(operation => operation.BankAccount)
-                    .ThenInclude(bankAccount => bankAccount.User)
+                .Include(_applicationDatabaseContext.GetIncludePaths(typeof(Operation)))
+                /*.Include(operation => operation.BankAccount)
+                    .ThenInclude(bankAccount => bankAccount.User)*/
                 .UsePageable(pageable);
             var headers = PaginationUtil.GeneratePaginationHttpHeaders(page, HttpContext.Request);
             return Ok(page.Content).WithHeaders(headers);
@@ -80,10 +81,11 @@ namespace JHipsterNetSampleApplication.Controllers {
         {
             _log.LogDebug($"REST request to get Operation : {id}");
             var result = await _applicationDatabaseContext.Operations
-                .Include(operation => operation.BankAccount)
+                .Include(_applicationDatabaseContext.GetIncludePaths(typeof(Operation)))
+                /*.Include(operation => operation.BankAccount)
                     .ThenInclude(bankAccount => bankAccount.User)
                 .Include(operation => operation.OperationLabels)
-                    .ThenInclude(operationLabel => operationLabel.Label)
+                    .ThenInclude(operationLabel => operationLabel.Label)*/
                 .SingleOrDefaultAsync(operation => operation.Id == id);
             return ActionResultUtil.WrapOrNotFound(result);
         }
