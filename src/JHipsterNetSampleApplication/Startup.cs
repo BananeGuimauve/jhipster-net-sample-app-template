@@ -1,6 +1,5 @@
 using System;
 using JHipsterNet.Config;
-using JHipsterNetSampleApplication.Data;
 using JHipsterNetSampleApplication.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,18 +13,20 @@ using Newtonsoft.Json;
 
 namespace JHipsterNetSampleApplication {
     public sealed class Startup {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Environment = env;
         }
 
         private IConfiguration Configuration { get; }
+        private IHostingEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services
                 .AddNhipsterModule(Configuration)
-                .AddDatabaseModule(Configuration)
+                .AddDatabaseModule(Configuration, Environment)
                 .AddSecurityModule()
                 .AddProblemDetailsModule()
                 .AddAutoMapperModule()
@@ -39,17 +40,16 @@ namespace JHipsterNetSampleApplication {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider,
-            ApplicationDatabaseContext context, IOptions<JHipsterSettings> jhipsterSettingsOptions)
+        public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider,
+            IOptions<JHipsterSettings> jhipsterSettingsOptions)
         {
             var jhipsterSettings = jhipsterSettingsOptions.Value;
             app
                 .UseApplicationSecurity(jhipsterSettings)
                 .UseApplicationProblemDetails()
-                .UseApplicationWeb(env)
+                .UseApplicationWeb(Environment)
                 .UseApplicationSwagger()
-                .UseApplicationDatabase(serviceProvider, env)
-                .UseApplicationIdentity(serviceProvider);
+                .UseApplicationDatabase(serviceProvider);
         }
     }
 }

@@ -18,14 +18,12 @@ namespace JHipsterNetSampleApplication.Infrastructure {
 //            var op2 = new Operation {Date = DateTime.Now, Description = "Another operation", Amount = (decimal) 20.0};
 //            var op3 = new Operation {Date = DateTime.Now, Description = "Last one operation", Amount = (decimal) 30.0};
 
-
             SeedRoles(roleManager).Wait();
             SeedUsers(userManager).Wait();
             SeedUserRoles(userManager).Wait();
 
             return @this;
         }
-
 
         private static IEnumerable<Role> Roles()
         {
@@ -92,20 +90,20 @@ namespace JHipsterNetSampleApplication.Infrastructure {
 
         private static async Task SeedRoles(RoleManager<Role> roleManager)
         {
-            foreach (var role in Roles())
-                if (await roleManager.FindByNameAsync(role.Name) == null)
+            foreach (var role in Roles()) {
+                if (await roleManager.FindByNameAsync(role.Name) == null) {
                     await roleManager.CreateAsync(role);
-                else
-                    await roleManager.UpdateAsync(role);
+                }
+            }
         }
 
         private static async Task SeedUsers(UserManager<User> userManager)
         {
-            foreach (var user in Users())
-                if (await userManager.FindByIdAsync(user.Id) == null)
+            foreach (var user in Users()) {
+                if (await userManager.FindByIdAsync(user.Id) == null) {
                     await userManager.CreateAsync(user);
-                else
-                    await userManager.UpdateAsync(user);
+                }
+            }
         }
 
         private static async Task SeedUserRoles(UserManager<User> userManager)
