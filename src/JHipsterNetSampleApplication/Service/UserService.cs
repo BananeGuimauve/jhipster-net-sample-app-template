@@ -191,7 +191,7 @@ namespace JHipsterNetSampleApplication.Service {
         {
             var userName = _userManager.GetUserName(_httpContextAccessor.HttpContext.User);
             if (userName == null) return null;
-            return await getUserWithUserRolesByName(userName);
+            return await GetUserWithUserRolesByName(userName);
         }
 
         public IEnumerable<string> GetAuthorities()
@@ -209,7 +209,7 @@ namespace JHipsterNetSampleApplication.Service {
             }
         }
 
-        private async Task<User> getUserWithUserRolesByName(string name)
+        private async Task<User> GetUserWithUserRolesByName(string name)
         {
             return await _userManager.Users
                 .Include(it => it.UserRoles)

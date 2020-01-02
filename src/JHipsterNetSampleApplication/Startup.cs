@@ -1,19 +1,20 @@
 using System;
 using JHipsterNet.Config;
-using JHipsterNetSampleApplication.Data;
 using JHipsterNetSampleApplication.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 [assembly: ApiController]
 
-namespace JHipsterNetSampleApplication {
-    public sealed class Startup {
+namespace JHipsterNetSampleApplication
+{
+    public sealed class Startup
+    {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,24 +31,29 @@ namespace JHipsterNetSampleApplication {
                 .AddProblemDetailsModule()
                 .AddAutoMapperModule()
                 .AddWebModule()
-                .AddSwaggerModule()
-                .AddMvc().AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    options.SerializerSettings.Formatting = Formatting.Indented;
-                });
+                .AddSwaggerModule();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider,
-            ApplicationDatabaseContext context, IOptions<JHipsterSettings> jhipsterSettingsOptions)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider,
+            IOptions<JHipsterSettings> jhipsterSettingsOptions)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
+
             var jhipsterSettings = jhipsterSettingsOptions.Value;
             app
-                .UseApplicationSecurity(jhipsterSettings)
-                .UseApplicationProblemDetails()
-                .UseApplicationWeb(env)
                 .UseApplicationSwagger()
+                .UseRouting()
+                .UseApplicationSecurity(jhipsterSettings, env)
+                .UseApplicationProblemDetails()
+                .UseApplicationWeb()
                 .UseApplicationDatabase(serviceProvider, env)
                 .UseApplicationIdentity(serviceProvider);
         }

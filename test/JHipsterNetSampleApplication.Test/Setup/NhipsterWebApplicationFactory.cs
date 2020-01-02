@@ -10,13 +10,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace JHipsterNetSampleApplication.Test.Setup {
     public class NhipsterWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
         where TEntryPoint : class {
         private IServiceProvider _serviceProvider;
-        private ClaimsPrincipal _user { get; set; }
+        private ClaimsPrincipal User { get; set; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -25,13 +24,13 @@ namespace JHipsterNetSampleApplication.Test.Setup {
                     .AddMvc(TestMvcStartup.ConfigureMvcAuthorization());
                 services.Replace(new ServiceDescriptor(typeof(IHttpContextFactory), typeof(MockHttpContextFactory),
                     ServiceLifetime.Transient));
-                services.AddTransient(sp => new MockClaimsPrincipalProvider(_user));
+                services.AddTransient(sp => new MockClaimsPrincipalProvider(User));
             });
         }
 
         public TService GetRequiredService<TService>()
         {
-            if (_serviceProvider == null) _serviceProvider = Server.Host.Services.CreateScope().ServiceProvider;
+            if (_serviceProvider == null) _serviceProvider = Services.CreateScope().ServiceProvider;
 
             return _serviceProvider.GetRequiredService<TService>();
         }
@@ -39,7 +38,7 @@ namespace JHipsterNetSampleApplication.Test.Setup {
         public NhipsterWebApplicationFactory<TEntryPoint> WithMockUser(string name = "user",
             IEnumerable<string> roles = null, string authenticationType = "MockAuthenticationType")
         {
-            _user = BuildClaimsPrincipal(name, roles, authenticationType);
+            User = BuildClaimsPrincipal(name, roles, authenticationType);
             return this;
         }
 

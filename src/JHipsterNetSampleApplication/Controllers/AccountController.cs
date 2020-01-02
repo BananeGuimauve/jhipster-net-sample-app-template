@@ -6,6 +6,7 @@ using JHipsterNetSampleApplication.Service.Dto;
 using JHipsterNetSampleApplication.Web.Extensions;
 using JHipsterNetSampleApplication.Web.Filters;
 using JHipsterNetSampleApplication.Web.Rest.Problems;
+using JHipsterNetSampleApplication.Web.Rest.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -40,7 +41,8 @@ namespace JHipsterNetSampleApplication.Controllers {
 
             var user = await _userService.RegisterUser(managedUserVm, managedUserVm.Password);
             await _mailService.SendActivationEmail(user);
-            return CreatedAtAction(nameof(GetAccount), user);
+            return CreatedAtAction(nameof(GetAccount), new { login = user.Login }, user)
+                .WithHeaders(HeaderUtil.CreateEntityCreationAlert("userManagement.created", user.Login));
         }
 
         [HttpGet("activate")]

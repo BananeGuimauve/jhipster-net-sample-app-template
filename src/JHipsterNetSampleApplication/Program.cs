@@ -1,44 +1,42 @@
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
 using System.IO;
 using JHipsterNet.Logging;
 using ILogger = Serilog.ILogger;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
-namespace JHipsterNetSampleApplication {
-    public class Program {
-
+namespace JHipsterNetSampleApplication
+{
+    public class Program
+    {
         public static int Main(string[] args)
         {
             try {
-
                 Log.Logger = CreateLogger();
 
-                CreateWebHostBuilder(args).Build().Run();
+                CreateHostBuilder(args).Build().Run();
 
                 return 0;
-
             }
             catch (Exception ex) {
                 // Use ForContext to give a context to this static environment (for Serilog LoggerNameEnricher).
                 Log.ForContext<Program>().Fatal(ex, $"Host terminated unexpectedly");
                 return 1;
-
             }
             finally {
-
                 Log.CloseAndFlush();
-
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(params string[] args)
+        public static IHostBuilder CreateHostBuilder(params string[] args)
         {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseSerilog();
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => {
+                    webBuilder.UseStartup<Startup>()
+                        .UseSerilog();
+                });
         }
 
         /// <summary>
@@ -66,7 +64,7 @@ namespace JHipsterNetSampleApplication {
         private static IConfiguration GetAppConfiguration()
         {
             // Actually, before ASP.NET bootstrap, we must rely on environment variable to get environment name
-            // https://docs.microsoft.com/fr-fr/aspnet/core/fundamentals/environments?view=aspnetcore-2.2
+            // https://docs.microsoft.com/fr-fr/aspnet/core/fundamentals/environments?view=aspnetcore-3.0
             // Pay attention to casing for Linux environment. By default it's pascal case.
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 

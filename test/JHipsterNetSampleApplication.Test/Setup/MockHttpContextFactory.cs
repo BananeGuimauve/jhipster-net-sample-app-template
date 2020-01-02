@@ -1,25 +1,24 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
+using System;
 
 namespace JHipsterNetSampleApplication.Test.Setup {
     public class MockHttpContextFactory : IHttpContextFactory {
-        private readonly HttpContextFactory _delegate;
+        private readonly DefaultHttpContextFactory _delegate;
         private readonly MockClaimsPrincipalProvider _mockClaimsPrincipalProvider;
 
-        public MockHttpContextFactory(IOptions<FormOptions> formOptions,
-            MockClaimsPrincipalProvider mockClaimsPrincipalProvider)
+        public MockHttpContextFactory(IServiceProvider serviceProvider, MockClaimsPrincipalProvider mockClaimsPrincipalProvider)
         {
-            _delegate = new HttpContextFactory(formOptions);
+            _delegate = new DefaultHttpContextFactory(serviceProvider);
             _mockClaimsPrincipalProvider = mockClaimsPrincipalProvider;
         }
 
-        public MockHttpContextFactory(IOptions<FormOptions> formOptions, IHttpContextAccessor httpContextAccessor,
+        /*public MockHttpContextFactory(IOptions<FormOptions> formOptions, IHttpContextAccessor httpContextAccessor,
             MockClaimsPrincipalProvider mockClaimsPrincipalProvider)
         {
-            _delegate = new HttpContextFactory(formOptions, httpContextAccessor);
+            _delegate = new DefaultHttpContextFactory(formOptions, httpContextAccessor);
             _mockClaimsPrincipalProvider = mockClaimsPrincipalProvider;
-        }
+        }*/
 
         public HttpContext Create(IFeatureCollection featureCollection)
         {

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /app
 COPY ["src/JHipsterNet/JHipsterNet.csproj", "src/JHipsterNet/"]
 COPY ["src/JHipsterNetSampleApplication/JHipsterNetSampleApplication.csproj", "src/JHipsterNetSampleApplication/"]
@@ -14,7 +14,7 @@ RUN npm install
 RUN rm -rf wwwroot && \
     dotnet publish "JHipsterNetSampleApplication.csproj" -c Release -o /app/out
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2 AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/out .

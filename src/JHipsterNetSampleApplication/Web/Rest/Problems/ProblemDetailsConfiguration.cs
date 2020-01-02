@@ -5,25 +5,26 @@ using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 
 namespace JHipsterNetSampleApplication.Web.Rest.Problems {
     public class ProblemDetailsConfiguration : IConfigureOptions<ProblemDetailsOptions> {
-        public ProblemDetailsConfiguration(IHostingEnvironment environment, IHttpContextAccessor httpContextAccessor)
+        public ProblemDetailsConfiguration(IWebHostEnvironment env, IHttpContextAccessor httpContextAcc)
         {
-            _environment = environment;
-            _HttpContextAccessor = httpContextAccessor;
+            Environment = env;
+            HttpContextAccessor = httpContextAcc;
         }
 
-        private IHostingEnvironment _environment { get; }
-        private IHttpContextAccessor _HttpContextAccessor { get; }
+        private IWebHostEnvironment Environment { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public void Configure(ProblemDetailsOptions options)
         {
-            options.IncludeExceptionDetails = ctx => _environment.IsDevelopment();
+            options.IncludeExceptionDetails = ctx => Environment.IsDevelopment();
 
-            options.OnBeforeWriteDetails = details => {
+            options.OnBeforeWriteDetails = (ctx, details) => {
                 // keep consistent with asp.net core 2.2 conventions that adds a tracing value
-                var traceId = Activity.Current?.Id ?? _HttpContextAccessor.HttpContext.TraceIdentifier;
+                var traceId = Activity.Current?.Id ?? HttpContextAccessor.HttpContext.TraceIdentifier;
                 details.Extensions["traceId"] = traceId;
             };
 

@@ -18,7 +18,6 @@ namespace JHipsterNetSampleApplication.Infrastructure {
 //            var op2 = new Operation {Date = DateTime.Now, Description = "Another operation", Amount = (decimal) 20.0};
 //            var op3 = new Operation {Date = DateTime.Now, Description = "Last one operation", Amount = (decimal) 30.0};
 
-
             SeedRoles(roleManager).Wait();
             SeedUsers(userManager).Wait();
             SeedUserRoles(userManager).Wait();
@@ -42,11 +41,13 @@ namespace JHipsterNetSampleApplication.Infrastructure {
                     Id = "user-0",
                     UserName = "system",
                     PasswordHash = "$2a$10$mE.qmcV0mFU5NcKh73TZx.z4ueI/.bDWbj0T1BYyqP481kGGarKLG",
-                    FirstName = "",
+                    FirstName = "System",
                     LastName = "System",
                     Email = "system@localhost",
                     Activated = true,
-                    LangKey = "en"
+                    LangKey = "en",
+                    CreatedBy = "system",
+                    LastModifiedBy = "system"
                 },
                 new User {
                     Id = "user-1",
@@ -56,27 +57,33 @@ namespace JHipsterNetSampleApplication.Infrastructure {
                     LastName = "User",
                     Email = "anonymous@localhost",
                     Activated = true,
-                    LangKey = "en"
+                    LangKey = "en",
+                    CreatedBy = "system",
+                    LastModifiedBy = "system"
                 },
                 new User {
                     Id = "user-2",
                     UserName = "admin",
                     PasswordHash = "$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC",
-                    FirstName = "admin",
+                    FirstName = "Administrator",
                     LastName = "Administrator",
                     Email = "admin@localhost",
                     Activated = true,
-                    LangKey = "en"
+                    LangKey = "en",
+                    CreatedBy = "system",
+                    LastModifiedBy = "system"
                 },
                 new User {
                     Id = "user-3",
                     UserName = "user",
                     PasswordHash = "$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K",
-                    FirstName = "",
+                    FirstName = "User",
                     LastName = "User",
                     Email = "user@localhost",
                     Activated = true,
-                    LangKey = "en"
+                    LangKey = "en",
+                    CreatedBy = "system",
+                    LastModifiedBy = "system"
                 }
             };
         }

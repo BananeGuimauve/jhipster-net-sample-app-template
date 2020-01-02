@@ -19,15 +19,17 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using AuthenticationService = JHipsterNetSampleApplication.Service.AuthenticationService;
 using IAuthenticationService = JHipsterNetSampleApplication.Service.IAuthenticationService;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
-namespace JHipsterNetSampleApplication.Infrastructure {
-    public static class SecurityStartup {
-
+namespace JHipsterNetSampleApplication.Infrastructure
+{
+    public static class SecurityStartup
+    {
         public const string UserNameClaimType = JwtRegisteredClaimNames.Sub;
 
         public static IServiceCollection AddSecurityModule(this IServiceCollection @this)
         {
-
             //TODO Retrieve the signing key properly (DRY with TokenProvider)
             var opt = @this.BuildServiceProvider().GetRequiredService<IOptions<JHipsterSettings>>();
             var jhipsterSettings = opt.Value;
@@ -85,12 +87,17 @@ namespace JHipsterNetSampleApplication.Infrastructure {
         }
 
         public static IApplicationBuilder UseApplicationSecurity(this IApplicationBuilder @this,
-            JHipsterSettings jhipsterSettings)
+            JHipsterSettings jhipsterSettings, IWebHostEnvironment env)
         {
             @this.UseCors(CorsPolicyBuilder(jhipsterSettings.Cors));
             @this.UseAuthentication();
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            @this.UseHsts();
+            @this.UseAuthorization();
+            
+            if (!env.IsDevelopment())
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                @this.UseHsts();
+            }            
             @this.UseHttpsRedirection();
             return @this;
         }

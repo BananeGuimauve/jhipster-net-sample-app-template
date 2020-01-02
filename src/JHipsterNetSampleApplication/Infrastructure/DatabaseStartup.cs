@@ -6,6 +6,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace JHipsterNetSampleApplication.Infrastructure {
     public static class DatabaseConfiguration {
@@ -16,14 +17,18 @@ namespace JHipsterNetSampleApplication.Infrastructure {
                 DataSource = entityFrameworkConfiguration["DataSource"]
             }.ToString());
 
-            @this.AddDbContext<ApplicationDatabaseContext>(context => { context.UseSqlite(connection); });
+            @this.AddDbContext<ApplicationDatabaseContext>(options => { options.UseSqlite(connection); });
 
             return @this;
         }
 
         public static IApplicationBuilder UseApplicationDatabase(this IApplicationBuilder @this,
-            IServiceProvider serviceProvider, IHostingEnvironment environment)
+            IServiceProvider serviceProvider, IWebHostEnvironment environment)
         {
+            if (environment.IsDevelopment()) {
+                @this.UseDatabaseErrorPage();
+            }
+
             if (environment.IsDevelopment() || environment.IsProduction()) {
                 var context = serviceProvider.GetRequiredService<ApplicationDatabaseContext>();
                 context.Database.OpenConnection();

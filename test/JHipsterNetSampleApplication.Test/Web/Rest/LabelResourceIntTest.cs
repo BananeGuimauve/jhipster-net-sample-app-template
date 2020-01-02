@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,7 +15,7 @@ namespace JHipsterNetSampleApplication.Test.Web.Rest {
         public LabelResourceIntTest()
         {
             _factory = new NhipsterWebApplicationFactory<Startup>();
-            _client = _factory.CreateClient();
+            _client = _factory.WithMockUser().CreateClient();
 
             _applicationDatabaseContext = _factory.GetRequiredService<ApplicationDatabaseContext>();
 

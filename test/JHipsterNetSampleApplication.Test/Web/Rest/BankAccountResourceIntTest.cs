@@ -15,7 +15,7 @@ namespace JHipsterNetSampleApplication.Test.Web.Rest {
         public BankAccountResourceIntTest()
         {
             _factory = new NhipsterWebApplicationFactory<Startup>();
-            _client = _factory.CreateClient();
+            _client = _factory.WithMockUser().CreateClient();
 
             _applicationDatabaseContext = _factory.GetRequiredService<ApplicationDatabaseContext>();
 

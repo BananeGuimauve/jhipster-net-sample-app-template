@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace JHipsterNetSampleApplication.Infrastructure {
     public static class SwaggerConfiguration {
         public static IServiceCollection AddSwaggerModule(this IServiceCollection @this)
         {
             @this.AddSwaggerGen(c => {
-                c.SwaggerDoc("v2", new Info {Title = "nhipsterSampleApplication API", Version = "0.0.1"});
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "NhipsterSampleApplication API", Version = "v0.0.1"});
             });
 
             return @this;
@@ -17,7 +17,7 @@ namespace JHipsterNetSampleApplication.Infrastructure {
         {
             @this.UseSwagger();
             @this.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v2/swagger.json", "nhipsterSampleApplication API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "NhipsterSampleApplication API");
             });
             return @this;
         }
